@@ -7,13 +7,9 @@ import javax.swing.ImageIcon;
 
 public class LayerLevel extends Layer {
 	/**
-	 * 标题图片
-	 */
-	private static final Image IMG_LV =new ImageIcon("level.png").getImage();
-	/**
 	 * 标题图片的宽度
 	 */
-	private static final int IMG_LV_W = IMG_LV.getWidth(null);
+	private static final int IMG_LV_W = Img.LVEVL.getWidth(null);
 	
 
 	public LayerLevel(int x,int y,int w,int h) {
@@ -23,7 +19,7 @@ public class LayerLevel extends Layer {
 		this.createWindow(g);
 		//窗口标题
 		int centerX=this.w-IMG_LV_W >>1;
-		g.drawImage(IMG_LV ,this.x+centerX, this.y+PADDING,null );
+		g.drawImage(Img.LVEVL ,this.x+centerX, this.y+PADDING,null );
 		//显示等级
 		this.drawNumberLeftPad(centerX, 64,this.dto.getLevel(),2, g);
 	}

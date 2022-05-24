@@ -1,13 +1,10 @@
 package ui;
 
 import java.awt.Graphics;
-import java.awt.Image;
+
 import java.awt.Point;
 
-import javax.swing.ImageIcon;
-
 public class LayerGame extends Layer {
-	private static final Image ACT =new ImageIcon("game/rect.jpg").getImage();
 	//TODO配置文件
 	/**
 	 * 左位移偏移量
@@ -45,7 +42,7 @@ public class LayerGame extends Layer {
 	 * 绘制正方形块
 	 */
 	private void drawActByPoint(int x,int y,int imgIdx,Graphics g) {
-		g.drawImage(ACT, 
+		g.drawImage(Img.ACT, 
 				this.x+(x<<SIZE_ROL)+7,
 				this.y+(y<<SIZE_ROL)+7,
 				this.x+(x+1<<SIZE_ROL)+7,

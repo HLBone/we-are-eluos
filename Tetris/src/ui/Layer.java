@@ -1,5 +1,7 @@
 package ui;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 
 import java.awt.Image;
@@ -23,10 +25,9 @@ public abstract class Layer {
 		PADDING=cfg.getPadding();
 		 SIZE=cfg.getWindowSize();
 	}
-	private static Image WINDOW_IMG =new ImageIcon("window/window.png").getImage();
-	private static int WINDOW_W =WINDOW_IMG.getWidth(null);
+	private static int WINDOW_W =Img.WINDOW.getWidth(null);
 	 
-	private static  int WINDOW_H=WINDOW_IMG.getHeight(null);
+	private static  int WINDOW_H=Img.WINDOW.getHeight(null);
 	/**
 	 * 数字图片 260 36
 	 */
@@ -39,6 +40,28 @@ public abstract class Layer {
 	 * 数字切片的高度
 	 */
 	private static final int IMG_NUMBER_H = IMG_NUMBER.getHeight(null);
+	
+	/**
+	 * 矩形值槽
+	 */
+	private static final Image IMG_RECT=new ImageIcon("window/rect.png").getImage();
+	/**
+	 * 矩形值槽(高度）
+	 */
+	private static final int IMG_RECT_H = IMG_RECT.getHeight(null);
+	/**
+	 * 矩形值槽图片(宽度）
+	 */
+	private static final int  IMG_RECT_W = IMG_RECT.getWidth(null);
+	/**
+	 * 矩形值槽（宽度）
+	 */
+	private  final int rectW ;
+	/**
+	 * 默认字体
+	 */
+	private static final Font DEF_FONT =new Font("黑体",Font.BOLD,30);
+	
 	/**
 	 * 窗口左上角x坐标
 	 */
@@ -69,6 +92,7 @@ public abstract class Layer {
 		this.y=y;
 		this.w=w;
 		this.h=h;
+	    this.rectW = this.w-(PADDING<<1);
 }
 	/**
 	 * 绘制窗口
@@ -76,23 +100,23 @@ public abstract class Layer {
 	protected  void createWindow(Graphics g) {
 		
 		//左上
-	    g.drawImage(WINDOW_IMG, x, y, x+SIZE, y+SIZE, 0, 0, SIZE, SIZE, null);
+	    g.drawImage(Img.WINDOW, x, y, x+SIZE, y+SIZE, 0, 0, SIZE, SIZE, null);
 	    //中上
-	    g.drawImage(WINDOW_IMG, x+SIZE, y, x+w-SIZE, y+SIZE, SIZE, 0, WINDOW_W-SIZE, SIZE, null);
+	    g.drawImage(Img.WINDOW, x+SIZE, y, x+w-SIZE, y+SIZE, SIZE, 0, WINDOW_W-SIZE, SIZE, null);
 	    //右上
-	    g.drawImage(WINDOW_IMG, x+w-SIZE, y, x+w, y+SIZE, WINDOW_W-SIZE, 0, WINDOW_W, SIZE, null);
+	    g.drawImage(Img.WINDOW, x+w-SIZE, y, x+w, y+SIZE, WINDOW_W-SIZE, 0, WINDOW_W, SIZE, null);
 	    //左中
-	    g.drawImage(WINDOW_IMG, x, y+SIZE, x+SIZE, y+h-SIZE, 0, SIZE, SIZE, WINDOW_H-SIZE, null);
+	    g.drawImage(Img.WINDOW, x, y+SIZE, x+SIZE, y+h-SIZE, 0, SIZE, SIZE, WINDOW_H-SIZE, null);
 	    //中
-	    g.drawImage(WINDOW_IMG, x+SIZE, y+SIZE,x+ w-SIZE, y+h-SIZE, SIZE, SIZE,WINDOW_W- SIZE,WINDOW_H- SIZE, null);
+	    g.drawImage(Img.WINDOW, x+SIZE, y+SIZE,x+ w-SIZE, y+h-SIZE, SIZE, SIZE,WINDOW_W- SIZE,WINDOW_H- SIZE, null);
 	    //右中
-	    g.drawImage(WINDOW_IMG, x+w-SIZE, y+SIZE, x+w, y+h-SIZE, WINDOW_W-SIZE, SIZE, WINDOW_W,WINDOW_H- SIZE, null);
+	    g.drawImage(Img.WINDOW, x+w-SIZE, y+SIZE, x+w, y+h-SIZE, WINDOW_W-SIZE, SIZE, WINDOW_W,WINDOW_H- SIZE, null);
 	    //左下
-	    g.drawImage(WINDOW_IMG, x, y+h-SIZE, x+SIZE, y+h, 0, WINDOW_H-SIZE, SIZE, WINDOW_H, null);
+	    g.drawImage(Img.WINDOW, x, y+h-SIZE, x+SIZE, y+h, 0, WINDOW_H-SIZE, SIZE, WINDOW_H, null);
 	    //中下
-	    g.drawImage(WINDOW_IMG, x+SIZE, y+h-SIZE, x+w-SIZE, y+h, SIZE, WINDOW_H-SIZE,WINDOW_W- SIZE, WINDOW_H, null);
+	    g.drawImage(Img.WINDOW, x+SIZE, y+h-SIZE, x+w-SIZE, y+h, SIZE, WINDOW_H-SIZE,WINDOW_W- SIZE, WINDOW_H, null);
 	    //右下
-	    g.drawImage(WINDOW_IMG, x+w-SIZE, y+h-SIZE, x+w, y+h, WINDOW_W-SIZE, WINDOW_H-SIZE, WINDOW_W, WINDOW_H, null);
+	    g.drawImage(Img.WINDOW, x+w-SIZE, y+h-SIZE, x+w, y+h, WINDOW_W-SIZE, WINDOW_H-SIZE, WINDOW_W, WINDOW_H, null);
 	}
 	
 	public void setDto(GameDto dto) {
@@ -126,7 +150,49 @@ public abstract class Layer {
 				}	  
 			}   
 		}
-	
+		/**
+		 * 绘制值槽
+		 */
+          protected void drawRect(int y,String title,String number,double value,double maxValue,Graphics g) {
+			//各种值的初始化
+			int rect_x = this.x+PADDING;
+			int rect_y = this.y+ y;
+			//绘制背景
+			g.setColor(Color.BLACK);
+			g.fillRect( rect_x,rect_y,this.rectW , IMG_RECT_H+4 );
+			g.setColor(Color.WHITE);
+			g.fillRect( rect_x+1,rect_y+1,this.rectW-2 , IMG_RECT_H+2);
+			g.setColor(Color.BLACK);
+			g.fillRect(rect_x+2,rect_y+2,this.rectW-4 ,IMG_RECT_H);
+			//绘制值槽
+			//求出比值
+			double p = value/maxValue;
+			//求出宽度
+		    int w = (int)(p*(this.rectW-4));
+		    //求出颜色
+		  int subIdx =(int)(p*IMG_RECT_W) ;
+		    g.drawImage(IMG_RECT,
+		    	     rect_x+2, rect_y+2,
+		    		 rect_x+w+2,rect_y+2+IMG_RECT_H,
+		    		 subIdx, 0, subIdx+1,IMG_RECT_H ,
+		    		null);
+		    g.setColor(Color.WHITE);
+		    g.setFont(DEF_FONT);
+	       g.drawString(title, rect_x+4 , rect_y+30);
+	       if(number!=null) {
+	    	 //TODO绘制数值  
+	       }
+		}
+	/**
+	 * 正中绘图
+	 */
+ void drawImageAtCenter(Image img,Graphics g) {
+	int imgW = img.getWidth(null);
+	int imgH = img.getHeight(null);
+	g.drawImage(img, this.x+( this.w-imgW>>1),this.y+(this.h-imgH>>1), null);
+		
+	}
+		
 	
 	/**
 	 * 刷新游戏具体内容
